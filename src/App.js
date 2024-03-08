@@ -75,6 +75,7 @@ function EatNSplit() {
 
   function handleDeleteFriend(name) {
     setFriends(friends.filter((friend) => friend.name !== name));
+    setCurFriend("");
   }
 
   return (
@@ -88,6 +89,7 @@ function EatNSplit() {
             curFriend={curFriend}
             onDeleteFriend={handleDeleteFriend}
           />
+
           <AddNewFriends
             friends={friends}
             friendName={friendName}
@@ -99,6 +101,7 @@ function EatNSplit() {
         </div>
         <InputBillData curFriend={curFriend} setCurFriend={setCurFriend} />
       </div>
+      <Gallery />
       <Footer />
     </>
   );
@@ -294,6 +297,73 @@ function InputBillData({ curFriend, setCurFriend }) {
         </button>
       </form>
     )
+  );
+}
+
+function Gallery() {
+  return (
+    <div className="img-gallery">
+      <img
+        src="https://th.bing.com/th/id/OIG1.40BxEe8JEcBUK2WdJdPZ?w=1024&h=1024&rs=1&pid=ImgDetMain"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG1.cjiCt5rrX1PBMzKIXGhe?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG1.AkBhOZ6.2ok12udu_Vdt?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG1.ETmK8npRehSGnsC17mGn?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG3.CwZF5Wf8HUUHEGUpnkqJ?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG3.i1GJ8WmA1t6am47hBo0c?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG3.BOlr0Gqt7kcqzzqjK9gn?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG3.bBPQuqhfr_aO1btz08B9?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG1.LklJFdlMt4D51CXdedR6?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG1.JipOCbgYDg3gqGzx5yEj?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG1.R6efrx3Np4mqzO8y7Hbk?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG1.IIQqI8VpN7IFjWLSnl4v?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+    </div>
   );
 }
 

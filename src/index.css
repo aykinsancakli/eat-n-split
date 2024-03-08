@@ -64,7 +64,7 @@ h1:hover {
   align-items: flex-start;
   gap: 4rem;
   max-width: 100rem;
-  margin: 5rem auto;
+  margin: 12rem auto;
 
   animation: start 1.15s ease-in;
 }
@@ -323,11 +323,25 @@ select {
   align-items: center;
   justify-content: center;
   margin-top: auto;
-  margin-top: 23rem;
   padding: 1rem 0;
   font-size: 1.4rem;
-  color: #555;
+  color: #f7f7f7;
   background-color: #a5d8ff;
+}
+
+/* IMG GALLERY */
+.img-gallery {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: 60s slide infinite linear;
+}
+
+.brand-logo {
+  height: 28rem;
+  opacity: 0.65;
+  display: block;
 }
 
 /* FOR ENTIRE UI */
@@ -414,5 +428,15 @@ select {
     transform: translateX(0);
     opacity: 1;
     filter: blur(0);
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-80rem);
+  }
+
+  100% {
+    transform: translateX(80rem);
   }
 }
