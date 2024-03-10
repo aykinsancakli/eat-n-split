@@ -13,6 +13,7 @@ body {
   font-family: "Rubik", sans-serif;
   font-size: 1.6rem;
   color: #555;
+  background-image: linear-gradient(to bottom right, #1864ab, #fe6893);
 }
 
 .header {
@@ -20,8 +21,10 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: #a5d8ff;
+  background-color: #ffffffd6;
   padding: 0.8rem 4.8rem;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.075);
+  overflow: hidden;
 }
 
 .header p {
@@ -64,7 +67,7 @@ h1:hover {
   align-items: flex-start;
   gap: 4rem;
   max-width: 100rem;
-  margin: 12rem auto;
+  margin: 12rem auto 24rem auto;
 
   animation: start 1.15s ease-in;
 }
@@ -82,17 +85,21 @@ h1:hover {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  animation: none;
 }
 
 /* FRIEND */
 .friend {
-  background-color: #fff;
+  background-color: #ffffff9c;
   padding: 2rem;
   border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   transition: all 0.2s;
+
+  animation: fadeIn 0.4s ease-in-out;
 }
 
 .friend:hover {
@@ -111,16 +118,16 @@ h1:hover {
   gap: 1rem;
 }
 
-.owes {
+.green {
   color: green;
 }
 
-.owe {
-  color: red;
+.red {
+  color: rgb(214, 19, 19);
 }
 
 .even {
-  color: #333;
+  color: #222;
 }
 
 /* FRIEND CLASSNAMES */
@@ -132,12 +139,12 @@ h1:hover {
 .friend-name {
   font-weight: bold;
   font-size: 1.8rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
   color: #333;
 }
 
 .friend-status {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
 }
 
 .btn {
@@ -172,7 +179,9 @@ h1:hover {
 
 .add-friends-form {
   font-size: 1.8rem;
-  background-color: #e7f5ff;
+  /* background-color: #e7f5ff; */
+  background-color: #ffffff9c;
+  color: #333;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -185,6 +194,7 @@ h1:hover {
   padding: 0.8rem;
   border: none;
   border-radius: 5px;
+  background-color: #ffffff9c;
 }
 
 .add-friends-form input:focus {
@@ -195,7 +205,7 @@ h1:hover {
 
 input:focus,
 select:focus {
-  outline: 3px solid #74c0fc;
+  outline: 2px solid #74c0fc;
 }
 
 /* *:focus */
@@ -242,10 +252,12 @@ select:focus {
 /* INPUT BILL DATA FORM */
 .input-bill-form {
   background-color: #e7f5ff;
+  background-color: #ffffff9c;
   padding: 3.6rem;
   border-radius: 9px;
   font-weight: bold;
   flex: 1;
+  color: #333;
 
   display: flex;
   flex-direction: column;
@@ -253,6 +265,11 @@ select:focus {
   font-size: 1.8rem;
 
   animation: fadeIn 0.4s ease-in-out;
+}
+
+.input-bill-form input,
+.input-bill-form select {
+  background-color: #ffffff9c;
 }
 
 /* FOR OPEN AND CLOSE BUTTONS */
@@ -327,6 +344,10 @@ select {
   font-size: 1.4rem;
   color: #f7f7f7;
   background-color: #a5d8ff;
+  /* background-image: linear-gradient(to bottom right, #1864ab, #fe6893); */
+  background-color: #fff;
+  background-color: #ffffffd6;
+  color: #555;
 }
 
 /* IMG GALLERY */
@@ -334,14 +355,16 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: rgba(0, 0, 0, 0.075);
 
-  animation: 60s slide infinite linear;
+  animation: 55s slide infinite linear;
 }
 
 .brand-logo {
-  height: 28rem;
-  opacity: 0.65;
+  height: 20rem;
+  opacity: 0.5;
   display: block;
+  filter: brightness(85%);
 }
 
 /* FOR ENTIRE UI */

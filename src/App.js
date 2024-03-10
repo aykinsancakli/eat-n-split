@@ -10,20 +10,20 @@ const initialFriends = [
   {
     id: generateUniqueId(),
     name: "Ellis",
-    photo: "https://i.pravatar.cc/48",
-    status: "You owe Ellis 7€",
+    photo: "https://i.pravatar.cc/48?u=118836",
+    balance: -7,
   },
   {
     id: generateUniqueId(),
     name: "Carter",
-    photo: "https://i.pravatar.cc/49",
-    status: "Carter owes you 20€",
+    photo: "https://i.pravatar.cc/48?u=933369",
+    balance: 20,
   },
   {
     id: generateUniqueId(),
     name: "Jordan",
-    photo: "https://i.pravatar.cc/50",
-    status: "You and Jordan are even",
+    photo: "https://i.pravatar.cc/48?u=499476",
+    balance: 0,
   },
 ];
 
@@ -45,6 +45,7 @@ function EatNSplit() {
 
   function handleIsOpen() {
     setIsOpen((isOpen) => !isOpen);
+    setCurFriend("");
   }
 
   function handleAddFriends(e, name, url) {
@@ -61,21 +62,32 @@ function EatNSplit() {
         id: generateUniqueId(),
         name: name,
         photo: url,
-        status: `You and ${name} are even`,
+        balance: 0,
       },
     ]);
   }
 
-  function handleSelectFriend(name) {
-    const selectedFriend = friends.find((friend) => friend.name === name);
+  function handleSelectFriend(id) {
+    const selectedFriend = friends.find((friend) => friend.id === id);
     setCurFriend((prevFriend) =>
       prevFriend === selectedFriend ? "" : selectedFriend
     );
+    setIsOpen(false);
   }
 
   function handleDeleteFriend(name) {
     setFriends(friends.filter((friend) => friend.name !== name));
     setCurFriend("");
+  }
+
+  function handleSplitBill(value) {
+    setFriends((friends) =>
+      friends.map((friend) =>
+        friend.id === curFriend.id
+          ? { ...friend, balance: friend.balance + value }
+          : friend
+      )
+    );
   }
 
   return (
@@ -99,7 +111,11 @@ function EatNSplit() {
             onIsOpen={handleIsOpen}
           />
         </div>
-        <InputBillData curFriend={curFriend} setCurFriend={setCurFriend} />
+        <InputBillData
+          curFriend={curFriend}
+          setCurFriend={setCurFriend}
+          onSplitBill={handleSplitBill}
+        />
       </div>
       <Gallery />
       <Footer />
@@ -113,7 +129,8 @@ function Header() {
       <h1>Eat N Split</h1>
       <img
         className="logo"
-        src="img/eat-n-split-logo-transparent.png"
+        // src="img/eat-n-split-logo-transparent.png"
+        src="https://aykinsancakli.github.io/eat-n-split/img/eat-n-split-logo-transparent.png"
         alt="logo"
       />
       <p>Easily Split Bills with Friends...</p>
@@ -129,7 +146,7 @@ function FriendsList({ friends, onSelectFriend, curFriend, onDeleteFriend }) {
           id={friend.id}
           name={friend.name}
           photo={friend.photo}
-          status={friend.status}
+          balance={friend.balance}
           key={friend.id}
           onSelectFriend={onSelectFriend}
           curFriend={curFriend}
@@ -144,25 +161,36 @@ function Friend({
   id,
   name,
   photo,
-  status,
+  balance,
   onSelectFriend,
   curFriend,
   onDeleteFriend,
 }) {
-  const owesClass = status.includes("owes") ? "owes" : "owe";
-  const evenClass = status.includes("even") ? "even" : "";
-
   return (
     <div className={`friend ${curFriend.name === name ? "active" : ""}`}>
       <div className="friend-info">
         <img className="friend-photo" src={photo} alt="profile"></img>
         <div>
           <p className="friend-name">{name}</p>
-          <p className={`friend-status ${evenClass} ${owesClass}`}>{status}</p>
+          {balance < 0 && (
+            <p className="red friend-status">
+              You owe {name} {Math.abs(balance)}€
+            </p>
+          )}
+
+          {balance > 0 && (
+            <p className="green friend-status">
+              {name} owes you {Math.abs(balance)}€
+            </p>
+          )}
+
+          {balance === 0 && (
+            <p className="friend-status">You and {name} are even</p>
+          )}
         </div>
       </div>
       <div className="button-box">
-        <button className="btn select-btn" onClick={() => onSelectFriend(name)}>
+        <button className="btn select-btn" onClick={() => onSelectFriend(id)}>
           {curFriend.name === name ? "Close" : "Select"}
         </button>
         <button className="btn delete-btn" onClick={() => onDeleteFriend(name)}>
@@ -224,30 +252,22 @@ function AddNewFriends({
   );
 }
 
-function InputBillData({ curFriend, setCurFriend }) {
+function InputBillData({ curFriend, setCurFriend, onSplitBill }) {
   const [billValue, setBillValue] = useState("");
   const [expense, setExpense] = useState("");
-  const [whoPays, setWhoPays] = useState("you");
-
   // Derived state
   let expenseFriend = Math.abs(parseFloat(billValue) - parseFloat(expense));
+  const [whoPays, setWhoPays] = useState("you");
 
-  function handleSplitBill(e) {
+  function handleSubmit(e) {
     e.preventDefault();
 
-    // Validate input
-    if (isNaN(billValue) || isNaN(expense) || billValue <= 0 || expense < 0) {
-      return alert("Please enter valid values for bill value and expense!");
-    }
+    if (!billValue || !expense) return;
+
+    onSplitBill(whoPays === "you" ? expenseFriend : -expense);
 
     // Clear curFriend
     setCurFriend("");
-
-    if (whoPays === "you")
-      curFriend.status = `${curFriend.name} owes you ${expenseFriend}€`;
-
-    if (whoPays === curFriend.name)
-      curFriend.status = `You owe ${curFriend.name} ${expense}€ `;
 
     setBillValue("");
     setExpense("");
@@ -257,7 +277,7 @@ function InputBillData({ curFriend, setCurFriend }) {
 
   return (
     curFriend && (
-      <form className="input-bill-form">
+      <form className="input-bill-form" onSubmit={handleSubmit}>
         <h2 className="heading-secondary">
           Split a Bill With <span className="split-user">{curFriend.name}</span>
         </h2>
@@ -274,7 +294,11 @@ function InputBillData({ curFriend, setCurFriend }) {
           <input
             type="text"
             value={expense}
-            onChange={(e) => setExpense(Number(e.target.value))}
+            onChange={(e) =>
+              setExpense(
+                e.target.value > billValue ? expense : Number(e.target.value)
+              )
+            }
           ></input>
         </div>
         <div>
@@ -292,9 +316,7 @@ function InputBillData({ curFriend, setCurFriend }) {
             <option value={curFriend.name}>{curFriend.name}</option>
           </select>
         </div>
-        <button className="btn input-bill-split-btn" onClick={handleSplitBill}>
-          Split bill
-        </button>
+        <button className="btn input-bill-split-btn">Split bill</button>
       </form>
     )
   );
@@ -304,62 +326,82 @@ function Gallery() {
   return (
     <div className="img-gallery">
       <img
-        src="https://th.bing.com/th/id/OIG1.40BxEe8JEcBUK2WdJdPZ?w=1024&h=1024&rs=1&pid=ImgDetMain"
+        src="https://th.bing.com/th/id/OIG2.2v96hLHQGLXibbWGSxQ5?w=1024&h=1024&rs=1&pid=ImgDetMain"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG1.cjiCt5rrX1PBMzKIXGhe?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG2.W_PRf2VtV4a0yYS5qbHM?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG1.AkBhOZ6.2ok12udu_Vdt?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG2.oNqikMFuY8WSDCmD57_k?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG1.ETmK8npRehSGnsC17mGn?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG2.ARBtJtV1Cu.mAucNjNUO?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG3.CwZF5Wf8HUUHEGUpnkqJ?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3.pST3C.UgEfyfDP8Bu6sG?w=1024&h=1024&rs=1&pid=ImgDetMain"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG3.i1GJ8WmA1t6am47hBo0c?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3.ib2PkqPjWGsz.bIIoewu?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG3.BOlr0Gqt7kcqzzqjK9gn?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3.QBAjK9e0m1MQVQChhLpn?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG3.bBPQuqhfr_aO1btz08B9?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3..Q_rvt1S_4jD_IzpEqaY?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG1.LklJFdlMt4D51CXdedR6?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3.V54R.T4QA.fBK4xGlHq4?w=1024&h=1024&rs=1&pid=ImgDetMain"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG1.JipOCbgYDg3gqGzx5yEj?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3.oqBfiy_fEwoGIveVESBE?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG1.R6efrx3Np4mqzO8y7Hbk?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3.V7uXOj6.Lycd2JZGJBUp?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
       <img
-        src="https://th.bing.com/th/id/OIG1.IIQqI8VpN7IFjWLSnl4v?pid=ImgGn"
+        src="https://th.bing.com/th/id/OIG3.nvgKQP3oNNqLNeE0YeT6?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG2.5edb3YWNUOnnqMtcLVTv?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG2.eZ5BqM.aH3gJZMt3_YwA?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG2.zFPRErzrikkfEKFQXIR2?pid=ImgGn"
+        alt="brand logos"
+        className="brand-logo"
+      ></img>
+      <img
+        src="https://th.bing.com/th/id/OIG2.rmO97nqcp4ldZc7c855t?pid=ImgGn"
         alt="brand logos"
         className="brand-logo"
       ></img>
