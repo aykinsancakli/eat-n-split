@@ -115,6 +115,7 @@ function EatNSplit() {
           curFriend={curFriend}
           setCurFriend={setCurFriend}
           onSplitBill={handleSplitBill}
+          key={curFriend.id}
         />
       </div>
       <Gallery />
@@ -268,11 +269,6 @@ function InputBillData({ curFriend, setCurFriend, onSplitBill }) {
 
     // Clear curFriend
     setCurFriend("");
-
-    setBillValue("");
-    setExpense("");
-    setWhoPays("you");
-    expenseFriend = "";
   }
 
   return (
